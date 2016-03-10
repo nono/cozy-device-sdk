@@ -23,7 +23,7 @@ filterManager = new FilterManager(cozyUrl, deviceName, password);
 Commands
 --------
 
- * To create or update a filter you must have a configuration:
+ * To create or update a filter on your cozy, you must have a configuration:
    `filterManager.createOrUpdate(config)`
  * To get filter name: `filterManager.getFilterName()`
  * To get doc id: `filterManager.getDocId()`

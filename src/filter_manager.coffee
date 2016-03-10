@@ -18,7 +18,9 @@ class FilterManager
      * @param {String} deviceName - it's device name equal to the login
      * @param {String} password - it's password for authentication
     ###
-    constructor: (@cozyUrl, @deviceName, @password) ->
+    constructor: (cozyUrl, @deviceName, password) ->
+        @http = request.newClient cozyUrl
+        @http.setBasicAuth @deviceName, password
 
     ###*
      * Create or update a filter for a specific configuration.
@@ -34,6 +36,10 @@ class FilterManager
     ###
     createOrUpdate: (config, callback) ->
         log.debug "createOrUpdate"
+
+        unless config.file or config.folder or config.contact \
+                or config.calendar or config.notification
+            return callback new Error "You want synchronise something?"
 
         # create filter function
         filter = "false"
@@ -51,15 +57,13 @@ class FilterManager
             filter += " && doc.type === 'temporary')"
 
         # create couch doc
-        doc:
+        doc =
             _id: @getDocId()
             views: {} # fix couchdb error when views is not here
             filters:
                 config: "function (doc) { return doc.docType && (#{filter}); }"
 
-        client = request.newClient @cozyUrl
-        client.setBasicAuth @deviceName, @password
-        client.put "/ds-api/filters/config", doc, callback
+        @http.put "/ds-api/filters/config", doc, callback
 
     ###*
      * Get the design docId of the filter this device.
