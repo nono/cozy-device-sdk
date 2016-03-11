@@ -1,6 +1,6 @@
 {
   "name": "cozy-device-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Help development to create a device on Cozy",
   "author": "Cozy Cloud <contact@cozycloud.cc> (https://cozycloud.cc/)",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "coffee-script": "1.10.0",
     "coffeelint": "1.15.0",
     "mocha": "2.4.5",
-    "should": "8.2.2"
+    "should": "8.2.2",
+    "sinon": "1.17.3"
   }
 }
