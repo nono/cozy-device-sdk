@@ -1,12 +1,15 @@
 [Cozy][0] Device SDK
 ====================
 
+[![Build Status][5]][6]
+
 This node package will help development with:
 
  - [ ] authenticate to a cozy
  - [ ] create a device on cozy
  - [ ] remove a device on cozy
- - [X] create or update a filter for couch replication/change
+ - [X] create or update a filter for couch replication/change:
+   [see documentation](doc/filter_manager.md)
  - [ ] remove a filter
 
 
@@ -14,7 +17,7 @@ Commands
 --------
 
 * `npm install`: install dependencies
-* `npm run build`: compile library on cozy-device-sdk.js
+* `npm run build`: compile library to cozy-device-sdk.js
 * `npm run lint`: launch coffeelint on all coffee source files
 * `npm run test`: launch unit test with `mocha`
 
@@ -53,3 +56,5 @@ You can reach the Cozy Community by:
 [2]:  https://forum.cozy.io
 [3]:  https://github.com/cozy/
 [4]:  https://twitter.com/mycozycloud
+[5]:  https://travis-ci.org/cozy/cozy-device-sdk.svg?branch=master
+[6]:  https://travis-ci.org/cozy/cozy-device-sdk

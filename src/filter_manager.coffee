@@ -18,7 +18,9 @@ class FilterManager
      * @param {String} deviceName - it's device name equal to the login
      * @param {String} password - it's password for authentication
     ###
-    constructor: (@cozyUrl, @deviceName, @password) ->
+    constructor: (cozyUrl, @deviceName, password) ->
+        @http = request.newClient cozyUrl
+        @http.setBasicAuth @deviceName, password
 
     ###*
      * Create or update a filter for a specific configuration.
@@ -35,31 +37,33 @@ class FilterManager
     createOrUpdate: (config, callback) ->
         log.debug "createOrUpdate"
 
+        unless config.file or config.folder or config.contact \
+                or config.calendar or config.notification
+            return callback new Error "You want synchronise something?"
+
         # create filter function
         filter = "false"
-        if config.file?
-            filter += " || doc.docType.toLowerCase() === 'file'"
-        if config.folder?
-            filter += " || doc.docType.toLowerCase() === 'folder'"
-        if config.contact?
-            filter += " || doc.docType.toLowerCase() === 'contact'"
+
+        for param in ['file', 'folder', 'contact']
+            if config[param]
+                filter += " || doc.docType.toLowerCase() === '#{param}'"
+
         if config.calendar?
             filter += " || doc.docType.toLowerCase() === 'event'"
             filter += " || doc.docType.toLowerCase() === 'tag'"
+
         if config.notification?
             filter += " || (doc.docType.toLowerCase() === 'notification'"
             filter += " && doc.type === 'temporary')"
 
         # create couch doc
-        doc:
+        doc =
             _id: @getDocId()
             views: {} # fix couchdb error when views is not here
             filters:
                 config: "function (doc) { return doc.docType && (#{filter}); }"
 
-        client = request.newClient @cozyUrl
-        client.setBasicAuth @deviceName, @password
-        client.put "/ds-api/filters/config", doc, callback
+        @http.put "/ds-api/filters/config", doc, callback
 
     ###*
      * Get the design docId of the filter this device.
