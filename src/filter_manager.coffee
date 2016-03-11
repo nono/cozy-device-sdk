@@ -43,15 +43,15 @@ class FilterManager
 
         # create filter function
         filter = "false"
-        if config.file?
-            filter += " || doc.docType.toLowerCase() === 'file'"
-        if config.folder?
-            filter += " || doc.docType.toLowerCase() === 'folder'"
-        if config.contact?
-            filter += " || doc.docType.toLowerCase() === 'contact'"
+
+        for param in ['file', 'folder', 'contact']
+            if config[param]
+                filter += " || doc.docType.toLowerCase() === '#{param}'"
+
         if config.calendar?
             filter += " || doc.docType.toLowerCase() === 'event'"
             filter += " || doc.docType.toLowerCase() === 'tag'"
+
         if config.notification?
             filter += " || (doc.docType.toLowerCase() === 'notification'"
             filter += " && doc.type === 'temporary')"
