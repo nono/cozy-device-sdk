@@ -8,7 +8,7 @@ This node package will help development with:
  - [ ] authenticate to a cozy
  - [ ] create a device on cozy
  - [ ] remove a device on cozy
- - [X] create or update a filter for couch replication/change:
+ - [X] create or update a filter for couch replication/changes feed:
    [see documentation](doc/filter_manager.md)
  - [ ] remove a filter
 

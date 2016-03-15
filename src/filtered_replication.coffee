@@ -54,9 +54,9 @@ module.exports =
     setDesignDoc: (cozyUrl, deviceName, password, config, callback) ->
         log.debug "setDesignDoc"
 
-        unless config.file or config.folder or config.contact \
-                or config.calendar or config.notification
-            return callback new Error "You want synchronise something?"
+        unless config.file or config.contact or config.calendar \
+                or config.notification
+            return callback new Error "What do you want to synchronize?"
 
         doc = @getDesignDoc deviceName, config
 
