@@ -1,13 +1,13 @@
 {
   "name": "cozy-device-sdk",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "Help development to create a device on Cozy",
   "author": "Cozy Cloud <contact@cozycloud.cc> (https://cozycloud.cc/)",
   "license": "MIT",
-  "main": "cozy-device-sdk.js",
+  "main": "lib/index.js",
   "homepage": "https://github.com/cozy/cozy-device-sdk#readme",
   "scripts": {
-    "build": "cat src/*.coffee | coffee -cs > cozy-device-sdk.js",
+    "build": "coffee -co lib src/*.coffee",
     "lint": "coffeelint src/ test/ && coffee-jshint --options node src/",
     "test": "mocha test/"
   },
