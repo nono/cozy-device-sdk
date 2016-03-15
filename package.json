@@ -1,6 +1,6 @@
 {
   "name": "cozy-device-sdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Help development to create a device on Cozy",
   "author": "Cozy Cloud <contact@cozycloud.cc> (https://cozycloud.cc/)",
   "license": "MIT",
