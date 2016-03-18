@@ -5,11 +5,11 @@
 
 This node package will help development with:
 
- - [ ] authenticate to a cozy
- - [ ] create a device on cozy
- - [ ] remove a device on cozy
+ - [X] authenticate to a cozy
+ - [X] create a device on cozy
+ - [X] remove a device on cozy
  - [X] create or update a filter for couch replication/changes feed:
-   [see documentation](doc/filter_manager.md)
+   [see documentation](doc/filtered_replication.md)
  - [ ] remove a filter
 
 
