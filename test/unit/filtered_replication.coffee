@@ -23,7 +23,7 @@ describe "filteredReplication", ->
         it "create design doc", ->
 
             config = file: true
-            doc = filteredReplication.getDesignDoc deviceName, config
+            doc = filteredReplication.generateDesignDoc deviceName, config
 
             id = filteredReplication.getDesignDocId deviceName
             key = filteredReplication.getFilterName deviceName
