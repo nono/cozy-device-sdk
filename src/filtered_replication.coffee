@@ -41,8 +41,8 @@ module.exports =
         "function (doc) { return doc.docType && (#{filter}); }"
 
 
-    getDesignDoc: (deviceName, config) ->
-        log.debug "getDesignDoc"
+    generateDesignDoc: (deviceName, config) ->
+        log.debug "generateDesignDoc"
 
         # create couch doc
         _id: @getDesignDocId deviceName
@@ -58,8 +58,17 @@ module.exports =
                 or config.notification
             return callback new Error "What do you want to synchronize?"
 
-        doc = @getDesignDoc deviceName, config
+        doc = @generateDesignDoc deviceName, config
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
         client.put "/ds-api/filters/config", doc, callback
+
+
+    getDesignDoc: (cozyUrl, deviceName, password, callback) ->
+        log.debug "getDesignDoc"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, password
+        client.get "/ds-api/filters/config", (err, res, doc) ->
+            callback err, doc

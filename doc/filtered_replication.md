@@ -51,7 +51,8 @@ Commands
  * To get the filter name: `filteredReplication.getFilterName(deviceName)`
  * To get the id of the design doc: `filteredReplication.getDesignDocId(deviceName)`
  * To get the filtered function: `filteredReplication.getFilteredFunction(config)`
- * To get the design doc: `filteredReplication.getDesignDoc(deviceName, config)`
+ * To generate the design doc: `filteredReplication.generateDesignDoc(deviceName, config)`
+ * To get the design doc: `filteredReplication.getDesignDoc(cozyUrl, deviceName, password, callback)`
 
 
 [1]:  https://pouchdb.com/api.html#filtered-replication
