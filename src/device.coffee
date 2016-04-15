@@ -45,8 +45,6 @@ module.exports =
             if err
                 callback err
             else if body.error?
-                if body.error is 'string'
-                    log.error body.error
                 callback body.error
             else
                 callback null,
@@ -66,7 +64,7 @@ module.exports =
             module.exports.registerDevice cozyUrl, name, password, (err, res) ->
                 if err is 'This name is already used'
                     tries++
-                    tryRegister "#{originalName}-#{tries}", callback
+                    tryRegister "#{originalName}-#{tries}"
                 else
                     callback err, res
 

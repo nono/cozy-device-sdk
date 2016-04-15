@@ -67,7 +67,13 @@ module.exports =
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
         client.put "/ds-api/filters/config", doc, (err, res, body) ->
-            callback err, body
+            if err
+                callback err
+            else if not res?.statusCode in [200, 201]
+                message = body.error or "invalid statusCode #{res?.statusCode}"
+                callback new Error(message)
+            else
+                callback null, body
 
 
     getDesignDoc: (cozyUrl, deviceName, password, callback) ->
@@ -76,4 +82,10 @@ module.exports =
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
         client.get "/ds-api/filters/config", (err, res, body) ->
-            callback err, body
+            if err
+                callback err
+            else if res?.statusCode isnt 200
+                message = body.error or "invalid statusCode #{res?.statusCode}"
+                callback new Error(message)
+            else
+                callback null, body
