@@ -49,6 +49,7 @@ module.exports =
             else
                 callback null,
                     id: body.id
+                    deviceName: deviceName
                     password: body.password
 
 
