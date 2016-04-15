@@ -8,6 +8,8 @@ module.exports =
 
     # Pings the URL to check if it is a Cozy
     pingCozy: (cozyUrl, callback) ->
+        log.debug "pingCozy #{cozyUrl}"
+
         client = request.newClient cozyUrl
         client.get "status", (err, res, body) ->
             if res?.statusCode isnt 200
@@ -50,6 +52,25 @@ module.exports =
                 callback null,
                     id: body.id
                     password: body.password
+
+
+    # Same as registerDevice, but it will try again of the device name is
+    # already taken.
+    registerDeviceSafe: (cozyUrl, deviceName, password, callback) ->
+        log.debug "registerDeviceSafe #{cozyUrl}, #{deviceName}"
+
+        tries = 1
+        originalName = deviceName
+
+        tryRegister = (name) ->
+            module.exports.registerDevice cozyUrl, name, password, (err, res) ->
+                if err is 'This name is already used'
+                    tries++
+                    tryRegister "#{originalName}-#{tries}", callback
+                else
+                    callback err, res
+
+        tryRegister deviceName
 
 
     # Unregister device remotely, ask for revocation.
