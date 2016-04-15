@@ -9,7 +9,7 @@ module.exports =
 
     # Pings the cozy to check the credentials without creating a device
     checkCredentials: (cozyUrl, password, callback) ->
-        log.debug "checkCredentials"
+        log.debug "checkCredentials #{cozyUrl}"
 
         client = request.newClient cozyUrl
         data =
@@ -24,8 +24,8 @@ module.exports =
 
     # Register device remotely then returns credentials given by remote Cozy.
     # This credentials will allow the device to access to the Cozy database.
-    registerDevice: (cozyUrl, password, deviceName, callback) ->
-        log.debug "registerDevice"
+    registerDevice: (cozyUrl, deviceName, password, callback) ->
+        log.debug "registerDevice #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth 'owner', password
@@ -45,7 +45,7 @@ module.exports =
 
     # Unregister device remotely, ask for revocation.
     unregisterDevice: (cozyUrl, deviceName, password, callback) ->
-        log.debug "unregisterDevice"
+        log.debug "unregisterDevice #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
@@ -64,6 +64,8 @@ module.exports =
     # Get useful information about the disk space
     # (total, used and left) on the remote Cozy
     getDiskSpace: (cozyUrl, login, password, callback) ->
+        log.debug "getDiskSpace #{cozyUrl}, #{login}"
+
         client = request.newClient cozyUrl
         client.setBasicAuth login, password
 
