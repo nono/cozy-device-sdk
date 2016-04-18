@@ -55,7 +55,7 @@ module.exports =
             "#{@getFilterName deviceName}": @getFilteredFunction config
 
 
-    setDesignDoc: (cozyUrl, deviceName, password, config, callback) ->
+    setDesignDoc: (cozyUrl, deviceName, devicePassword, config, callback) ->
         log.debug "setDesignDoc #{cozyUrl}, #{deviceName}"
 
         unless config.file or config.contact or config.calendar \
@@ -65,7 +65,7 @@ module.exports =
         doc = @generateDesignDoc deviceName, config
 
         client = request.newClient cozyUrl
-        client.setBasicAuth deviceName, password
+        client.setBasicAuth deviceName, devicePassword
         client.put "/ds-api/filters/config", doc, (err, res, body) ->
             if err
                 callback err
@@ -76,11 +76,11 @@ module.exports =
                 callback null, body
 
 
-    getDesignDoc: (cozyUrl, deviceName, password, callback) ->
+    getDesignDoc: (cozyUrl, deviceName, devicePassword, callback) ->
         log.debug "getDesignDoc #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
-        client.setBasicAuth deviceName, password
+        client.setBasicAuth deviceName, devicePassword
         client.get "/ds-api/filters/config", (err, res, body) ->
             if err
                 callback err
@@ -91,11 +91,11 @@ module.exports =
                 callback null, body
 
 
-    removeDesignDoc: (cozyUrl, deviceName, password, callback) ->
+    removeDesignDoc: (cozyUrl, deviceName, devicePassword, callback) ->
         log.debug "removeDesignDoc #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
-        client.setBasicAuth deviceName, password
+        client.setBasicAuth deviceName, devicePassword
         client.del "/ds-api/filters/config", (err, res, body) ->
             if err
                 callback err

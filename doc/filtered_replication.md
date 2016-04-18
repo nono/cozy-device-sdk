@@ -41,8 +41,8 @@ To create a filteredReplication, you must have:
 config = { file: true }
 cozyUrl = 'https://demo.cozycloud.cc'
 deviceName = 'demo-laptop'
-password = '********'
-filteredReplication.setDesignDoc(cozyUrl, deviceName, password, config, callback)
+devicePassword = '********'
+filteredReplication.setDesignDoc(cozyUrl, deviceName, devicePassword, config, callback)
 ```
 
 Commands
@@ -52,8 +52,8 @@ Commands
  * To get the id of the design doc: `filteredReplication.getDesignDocId(deviceName)`
  * To get the filtered function: `filteredReplication.getFilteredFunction(config)`
  * To generate the design doc: `filteredReplication.generateDesignDoc(deviceName, config)`
- * To get the design doc: `filteredReplication.getDesignDoc(cozyUrl, deviceName, password, callback)`
- * To remove the design doc: `filteredReplication.removeDesignDoc(cozyUrl, deviceName, password, callback)`
+ * To get the design doc: `filteredReplication.getDesignDoc(cozyUrl, deviceName, devicePassword, callback)`
+ * To remove the design doc: `filteredReplication.removeDesignDoc(cozyUrl, deviceName, devicePassword, callback)`
 
 
 [1]:  https://pouchdb.com/api.html#filtered-replication
