@@ -4,7 +4,7 @@ log     = require('printit')
 
 
 # Some methods to discuss with a cozy stack
-module.exports =
+module.exports = Device =
 
     # Pings the URL to check if it is a Cozy
     pingCozy: (cozyUrl, callback) ->
@@ -62,7 +62,7 @@ module.exports =
         originalName = deviceName
 
         tryRegister = (name) ->
-            module.exports.registerDevice cozyUrl, name, password, (err, res) ->
+            Device.registerDevice cozyUrl, name, password, (err, res) ->
                 if err is 'This name is already used'
                     tries++
                     tryRegister "#{originalName}-#{tries}"
