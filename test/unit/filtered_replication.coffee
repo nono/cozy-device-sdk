@@ -35,11 +35,12 @@ describe "filteredReplication", ->
 
     describe "filtered function", ->
 
-        it "create empty filter function.", ->
-
-            fn = eval("(#{filteredReplication.getFilteredFunction()})")
-
-            fn(docType: 'file').should.be.false()
+        it "throw an exception when called with an empty config", ->
+            try
+                filteredReplication.getFilteredFunction()
+                fail()
+            catch e
+                e.message.should.equal 'No config'
 
         it "create contact filter function.", ->
 

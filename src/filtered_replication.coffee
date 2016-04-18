@@ -7,13 +7,13 @@ module.exports =
 
 
     getFilterName: (deviceName) ->
-        log.debug "getFilterName"
+        log.debug "getFilterName #{deviceName}"
 
         "filter-#{deviceName}-config"
 
 
     getDesignDocId: (deviceName) ->
-        log.debug "getDesignDocId"
+        log.debug "getDesignDocId #{deviceName}"
 
         "_design/#{@getFilterName deviceName}"
 
@@ -21,28 +21,32 @@ module.exports =
     getFilteredFunction: (config) ->
         log.debug "getFilteredFunction"
 
-        filter = "false"
+        throw new Error 'No config' unless config?
 
-        if config?.contact?
-            filter += " || doc.docType.toLowerCase() === 'contact'"
+        filters = []
 
-        if config?.calendar?
-            filter += " || doc.docType.toLowerCase() === 'event'"
-            filter += " || doc.docType.toLowerCase() === 'tag'"
+        if config.contact?
+            filters.push "doc.docType.toLowerCase() === 'contact'"
 
-        if config?.file?
-            filter += " || doc.docType.toLowerCase() === 'file'"
-            filter += " || doc.docType.toLowerCase() === 'folder'"
+        if config.calendar?
+            filters.push "doc.docType.toLowerCase() === 'event'"
+            filters.push "doc.docType.toLowerCase() === 'tag'"
 
-        if config?.notification?
-            filter += " || (doc.docType.toLowerCase() === 'notification'"
-            filter += " && doc.type === 'temporary')"
+        if config.file?
+            filters.push "doc.docType.toLowerCase() === 'file'"
+            filters.push "doc.docType.toLowerCase() === 'folder'"
 
-        "function (doc) { return doc.docType && (#{filter}); }"
+        if config.notification?
+            filters.push """
+            (doc.docType.toLowerCase() === 'notification'
+                && doc.type === 'temporary')
+            """
+
+        "function (doc) { return doc.docType && (#{filters.join ' || '}); }"
 
 
     generateDesignDoc: (deviceName, config) ->
-        log.debug "generateDesignDoc"
+        log.debug "generateDesignDoc #{deviceName}"
 
         # create couch doc
         _id: @getDesignDocId deviceName
@@ -52,7 +56,7 @@ module.exports =
 
 
     setDesignDoc: (cozyUrl, deviceName, password, config, callback) ->
-        log.debug "setDesignDoc"
+        log.debug "setDesignDoc #{cozyUrl}, #{deviceName}"
 
         unless config.file or config.contact or config.calendar \
                 or config.notification
@@ -62,13 +66,26 @@ module.exports =
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
-        client.put "/ds-api/filters/config", doc, callback
+        client.put "/ds-api/filters/config", doc, (err, res, body) ->
+            if err
+                callback err
+            else if not res?.statusCode in [200, 201]
+                message = body.error or "invalid statusCode #{res?.statusCode}"
+                callback new Error(message)
+            else
+                callback null, body
 
 
     getDesignDoc: (cozyUrl, deviceName, password, callback) ->
-        log.debug "getDesignDoc"
+        log.debug "getDesignDoc #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
-        client.get "/ds-api/filters/config", (err, res, doc) ->
-            callback err, doc
+        client.get "/ds-api/filters/config", (err, res, body) ->
+            if err
+                callback err
+            else if res?.statusCode isnt 200
+                message = body.error or "invalid statusCode #{res?.statusCode}"
+                callback new Error(message)
+            else
+                callback null, body

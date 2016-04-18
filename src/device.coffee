@@ -6,10 +6,21 @@ log     = require('printit')
 # Some methods to discuss with a cozy stack
 module.exports =
 
+    # Pings the URL to check if it is a Cozy
+    pingCozy: (cozyUrl, callback) ->
+        log.debug "pingCozy #{cozyUrl}"
+
+        client = request.newClient cozyUrl
+        client.get "status", (err, res, body) ->
+            if res?.statusCode isnt 200
+                callback new Error "No cozy at this URL"
+            else
+                callback()
+
 
     # Pings the cozy to check the credentials without creating a device
     checkCredentials: (cozyUrl, password, callback) ->
-        log.debug "checkCredentials"
+        log.debug "checkCredentials #{cozyUrl}"
 
         client = request.newClient cozyUrl
         data =
@@ -24,8 +35,8 @@ module.exports =
 
     # Register device remotely then returns credentials given by remote Cozy.
     # This credentials will allow the device to access to the Cozy database.
-    registerDevice: (cozyUrl, password, deviceName, callback) ->
-        log.debug "registerDevice"
+    registerDevice: (cozyUrl, deviceName, password, callback) ->
+        log.debug "registerDevice #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth 'owner', password
@@ -34,18 +45,36 @@ module.exports =
             if err
                 callback err
             else if body.error?
-                if body.error is 'string'
-                    log.error body.error
                 callback body.error
             else
                 callback null,
                     id: body.id
+                    deviceName: deviceName
                     password: body.password
+
+
+    # Same as registerDevice, but it will try again of the device name is
+    # already taken.
+    registerDeviceSafe: (cozyUrl, deviceName, password, callback) ->
+        log.debug "registerDeviceSafe #{cozyUrl}, #{deviceName}"
+
+        tries = 1
+        originalName = deviceName
+
+        tryRegister = (name) ->
+            module.exports.registerDevice cozyUrl, name, password, (err, res) ->
+                if err is 'This name is already used'
+                    tries++
+                    tryRegister "#{originalName}-#{tries}"
+                else
+                    callback err, res
+
+        tryRegister deviceName
 
 
     # Unregister device remotely, ask for revocation.
     unregisterDevice: (cozyUrl, deviceName, password, callback) ->
-        log.debug "unregisterDevice"
+        log.debug "unregisterDevice #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, password
@@ -64,6 +93,8 @@ module.exports =
     # Get useful information about the disk space
     # (total, used and left) on the remote Cozy
     getDiskSpace: (cozyUrl, login, password, callback) ->
+        log.debug "getDiskSpace #{cozyUrl}, #{login}"
+
         client = request.newClient cozyUrl
         client.setBasicAuth login, password
 
