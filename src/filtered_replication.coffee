@@ -89,3 +89,18 @@ module.exports =
                 callback new Error(message)
             else
                 callback null, body
+
+
+    removeDesignDoc: (cozyUrl, deviceName, password, callback) ->
+        log.debug "removeDesignDoc #{cozyUrl}, #{deviceName}"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, password
+        client.del "/ds-api/filters/config", (err, res, body) ->
+            if err
+                callback err
+            else if not res?.statusCode in [200, 204]
+                message = body.error or "invalid statusCode #{res?.statusCode}"
+                callback new Error(message)
+            else
+                callback null, body

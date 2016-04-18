@@ -53,6 +53,7 @@ Commands
  * To get the filtered function: `filteredReplication.getFilteredFunction(config)`
  * To generate the design doc: `filteredReplication.generateDesignDoc(deviceName, config)`
  * To get the design doc: `filteredReplication.getDesignDoc(cozyUrl, deviceName, password, callback)`
+ * To remove the design doc: `filteredReplication.removeDesignDoc(cozyUrl, deviceName, password, callback)`
 
 
 [1]:  https://pouchdb.com/api.html#filtered-replication
