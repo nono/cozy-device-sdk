@@ -44,7 +44,7 @@ module.exports = Device =
         client.setBasicAuth 'owner', cozyPassword
 
         device = login: deviceName
-        if callback
+        if callback?
             device.permissions = perms
         else
             callback = perms
@@ -70,6 +70,9 @@ module.exports = Device =
         originalName = deviceName
         registerDevice = Device.registerDevice
 
+        unless callback?
+            [perms, callback] = [null, perms]
+
         tryRegister = (name) ->
             registerDevice cozyUrl, name, cozyPassword, perms, (err, res) ->
                 if err is 'This name is already used'
@@ -90,6 +93,56 @@ module.exports = Device =
 
         client.del "device/#{deviceName}/", (err, res, body) ->
             if res.statusCode in [200, 204]
+                callback null
+            else if err
+                callback err
+            else if body.error?
+                callback new Error body.error
+            else
+                callback new Error "Something went wrong (#{res.statusCode})"
+
+
+    # Send a mail from the user. Can be used to contact support for example.
+    # Needs the 'send mail from user' permission
+    #
+    # mail is composed of:
+    # - to, the recipient
+    # - subject, a one-line subject
+    # - content, the body
+    # - attachments, the optional attached files
+    sendMailFromUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
+        log.debug "sendMailFromUser #{mail.to}, #{mail.subject}"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, devicePassword
+
+        client.post "ds-api/mail/from-user", mail, (err, res, body) ->
+            if res.statusCode is 200
+                callback null
+            else if err
+                callback err
+            else if body.error?
+                callback new Error body.error
+            else
+                callback new Error "Something went wrong (#{res.statusCode})"
+
+
+    # Send a mail to the user. Can be used to send a weekly report for example.
+    # Needs the 'send mail to user' permission
+    #
+    # mail is composed of:
+    # - from, the sender
+    # - subject, a one-line subject
+    # - content, the body
+    # - attachments, the optional attached files
+    sendMailToUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
+        log.debug "sendMailToUser #{mail.from}, #{mail.subject}"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, devicePassword
+
+        client.post "ds-api/mail/to-user", mail, (err, res, body) ->
+            if res.statusCode is 200
                 callback null
             else if err
                 callback err
