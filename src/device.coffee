@@ -35,13 +35,21 @@ module.exports = Device =
 
     # Register device remotely then returns credentials given by remote Cozy.
     # This credentials will allow the device to access to the Cozy database.
-    registerDevice: (cozyUrl, deviceName, cozyPassword, callback) ->
+    # Perms is optional. If given, it is used to indicate the permissions
+    # of the device. The default permissions cover files, folders and binaries.
+    registerDevice: (cozyUrl, deviceName, cozyPassword, perms, callback) ->
         log.debug "registerDevice #{cozyUrl}, #{deviceName}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth 'owner', cozyPassword
 
-        client.post 'device/', {login: deviceName}, (err, res, body) ->
+        device = login: deviceName
+        if callback
+            device.permissions = perms
+        else
+            callback = perms
+
+        client.post 'device/', device, (err, res, body) ->
             if err
                 callback err
             else if body.error?
@@ -55,14 +63,15 @@ module.exports = Device =
 
     # Same as registerDevice, but it will try again of the device name is
     # already taken.
-    registerDeviceSafe: (cozyUrl, deviceName, devicePassword, callback) ->
+    registerDeviceSafe: (cozyUrl, deviceName, cozyPassword, perms, callback) ->
         log.debug "registerDeviceSafe #{cozyUrl}, #{deviceName}"
 
         tries = 1
         originalName = deviceName
+        registerDevice = Device.registerDevice
 
         tryRegister = (name) ->
-            Device.registerDevice cozyUrl, name, devicePassword, (err, res) ->
+            registerDevice cozyUrl, name, cozyPassword, perms, (err, res) ->
                 if err is 'This name is already used'
                     tries++
                     tryRegister "#{originalName}-#{tries}"
