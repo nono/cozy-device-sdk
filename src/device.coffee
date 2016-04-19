@@ -99,6 +99,56 @@ module.exports = Device =
                 callback new Error "Something went wrong (#{res.statusCode})"
 
 
+    # Send a mail from the user. Can be used to contact support for example.
+    # Needs the 'send mail from user' permission
+    #
+    # mail is composed of:
+    # - to, the recipient
+    # - subject, a one-line subject
+    # - content, the body
+    # - attachments, the optional attached files
+    sendMailFromUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
+        log.debug "sendMailFromUser #{to}, #{subject}"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, devicePassword
+
+        client.post "ds-api/mail/from-user", mail, (err, res, body) ->
+            if res.statusCode is 200
+                callback null
+            else if err
+                callback err
+            else if body.error?
+                callback new Error body.error
+            else
+                callback new Error "Something went wrong (#{res.statusCode})"
+
+
+    # Send a mail to the user. Can be used to send a weekly report for example.
+    # Needs the 'send mail to user' permission
+    #
+    # mail is composed of:
+    # - from, the sender
+    # - subject, a one-line subject
+    # - content, the body
+    # - attachments, the optional attached files
+    sendMailToUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
+        log.debug "sendMailToUser #{to}, #{subject}"
+
+        client = request.newClient cozyUrl
+        client.setBasicAuth deviceName, devicePassword
+
+        client.post "ds-api/mail/to-user", mail, (err, res, body) ->
+            if res.statusCode is 200
+                callback null
+            else if err
+                callback err
+            else if body.error?
+                callback new Error body.error
+            else
+                callback new Error "Something went wrong (#{res.statusCode})"
+
+
     # Get useful information about the disk space
     # (total, used and left) on the remote Cozy
     getDiskSpace: (cozyUrl, login, password, callback) ->
