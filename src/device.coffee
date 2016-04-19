@@ -108,7 +108,7 @@ module.exports = Device =
     # - content, the body
     # - attachments, the optional attached files
     sendMailFromUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
-        log.debug "sendMailFromUser #{to}, #{subject}"
+        log.debug "sendMailFromUser #{mail.to}, #{mail.subject}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, devicePassword
@@ -133,7 +133,7 @@ module.exports = Device =
     # - content, the body
     # - attachments, the optional attached files
     sendMailToUser: (cozyUrl, deviceName, devicePassword, mail, callback) ->
-        log.debug "sendMailToUser #{to}, #{subject}"
+        log.debug "sendMailToUser #{mail.from}, #{mail.subject}"
 
         client = request.newClient cozyUrl
         client.setBasicAuth deviceName, devicePassword
