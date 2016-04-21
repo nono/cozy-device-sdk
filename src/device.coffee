@@ -44,7 +44,7 @@ module.exports = Device =
         client.setBasicAuth 'owner', cozyPassword
 
         device = login: deviceName
-        if callback
+        if callback?
             device.permissions = perms
         else
             callback = perms
@@ -69,6 +69,9 @@ module.exports = Device =
         tries = 1
         originalName = deviceName
         registerDevice = Device.registerDevice
+
+        unless callback?
+            [perms, callback] = [null, perms]
 
         tryRegister = (name) ->
             registerDevice cozyUrl, name, cozyPassword, perms, (err, res) ->
