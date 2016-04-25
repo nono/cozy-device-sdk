@@ -23,7 +23,7 @@
     "url": "https://github.com/cozy/cozy-device-sdk/issues"
   },
   "dependencies": {
-    "printit": "0.1.19",
+    "printit": "0.1.20",
     "request-json-light": "0.5.22"
   },
   "devDependencies": {
