@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "printit": "0.1.20",
-    "request-json-light": "0.5.22"
+    "request-json-light": "0.5.23"
   },
   "devDependencies": {
     "coffee-jshint": "0.2.3",
